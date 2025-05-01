@@ -6,41 +6,41 @@ import { useState, useEffect } from "react";
 export default function Home() {
   const [firstNameInput, setFirstNameInput] = useState(""); // State for input
   const [successMessage, setSuccessMessage] = useState(""); // State for success message
-  const [firstNames, setFirstNames] = useState([]); // State for storing list of first names
+  const [lastNames, setLastNames] = useState([]); // State for storing list of last names
 
-  // Fetch all first names from the database
-  const fetchFirstNames = async () => {
+  // Fetch all last names from the database
+  const fetchLastNames = async () => {
     try {
-      const res = await fetch("/api/saveFirstName");
+      const res = await fetch("/api/saveLastName");
       if (res.ok) {
         const data = await res.json();
-        setFirstNames(data.users); // Assuming the response contains 'users' array
+        setLastNames(data.users); // Assuming the response contains 'users' array
       } else {
-        console.error("Failed to fetch first names");
+        console.error("Failed to fetch last names");
       }
     } catch (error) {
-      console.error("Error fetching first names:", error);
+      console.error("Error fetching last names:", error);
     }
   };
 
-  // Handle form submission to save first name
+  // Handle form submission to save a last name
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!firstNameInput.trim()) return;
 
     try {
-      const res = await fetch("/api/saveFirstName", {
+      const res = await fetch("/api/saveLastName", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ firstName: firstNameInput }), // Sending firstName
+        body: JSON.stringify({ lastName: firstNameInput }), // Sending lastName
       });
 
       if (res.ok) {
         setFirstNameInput(""); // Clear input after submit
-        setSuccessMessage("First name saved successfully!"); // Show success message
-        fetchFirstNames(); // Refresh the list after submitting
+        setSuccessMessage("Last name saved successfully!"); // Show success message
+        fetchLastNames(); // Refresh the list after submitting
       } else {
-        console.error("Failed to save first name");
+        console.error("Failed to save last name");
         setSuccessMessage(""); // Clear any existing success message
       }
     } catch (error) {
@@ -50,46 +50,44 @@ export default function Home() {
   };
 
   // Handle delete action
-  const handleDelete = async (firstName) => {
+  const handleDelete = async (lastName) => {
     try {
-      const res = await fetch("/api/saveFirstName", {
+      const res = await fetch("/api/saveLastName", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ firstName }), // Ensure the body contains the firstName
+        body: JSON.stringify({ lastName }), // Ensure the body contains the lastName
       });
-  
+
       if (res.ok) {
-        // Optionally, refresh the list of first names after successful deletion
-        setSuccessMessage("First name deleted successfully!"); // Show success message
-        fetchFirstNames(); // Refresh the list of first names
+        // Optionally, refresh the list of last names after successful deletion
+        setSuccessMessage("Last name deleted successfully!"); // Show success message
+        fetchLastNames(); // Refresh the list of last names
       } else {
-        console.error("Failed to delete first name");
+        console.error("Failed to delete last name");
         setSuccessMessage(""); // Clear any existing success message
       }
     } catch (error) {
-      console.error("Error deleting first name:", error);
+      console.error("Error deleting last name:", error);
       setSuccessMessage(""); // Clear any existing success message
     }
   };
-  
-  
 
-  // Fetch the list of first names when the component mounts
+  // Fetch the list of last names when the component mounts
   useEffect(() => {
-    fetchFirstNames();
+    fetchLastNames();
   }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">Create First Name</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">Create Last Name</h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
             value={firstNameInput}
             onChange={(e) => setFirstNameInput(e.target.value)}
-            placeholder="Enter first name"
+            placeholder="Enter last name"
             className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
@@ -100,24 +98,24 @@ export default function Home() {
           </button>
         </form>
 
-        {/* Show success message after first name is saved */}
+        {/* Show success message after last name is saved */}
         {successMessage && (
           <p className="mt-4 text-green-500 text-center">{successMessage}</p>
         )}
 
-        {/* Display the list of existing first names */}
+        {/* Display the list of existing last names */}
         <div className="mt-6">
-          <h2 className="text-xl font-semibold mb-4">Existing First Names:</h2>
+          <h2 className="text-xl font-semibold mb-4">Existing Last Names:</h2>
           <div className="space-y-2">
-            {firstNames.length > 0 ? (
-              firstNames.map((user) => (
+            {lastNames.length > 0 ? (
+              lastNames.map((user) => (
                 <div
                   key={user._id}
                   className="flex items-center justify-between p-2 border rounded-md"
                 >
-                  <Link href={`/${user.firstName}`} className="text-blue-600">{user.firstName}</Link>
+                  <Link href={`/${user.lastName}`} className="text-blue-600">{user.lastName}</Link>
                   <button
-                    onClick={() => handleDelete(user.firstName)}
+                    onClick={() => handleDelete(user.lastName)}
                     className="text-red-500 hover:text-red-700"
                   >
                     Delete
@@ -125,7 +123,7 @@ export default function Home() {
                 </div>
               ))
             ) : (
-              <p className="text-gray-500">No first names yet.</p>
+              <p className="text-gray-500">No last names yet.</p>
             )}
           </div>
         </div>
